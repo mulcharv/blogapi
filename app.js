@@ -23,7 +23,7 @@ const helmet = require("helmet");
 const RateLimit = require("express-rate-limit");
 
 const User = require("./models/user");
-const Post = require("./models/message");
+const Post = require("./models/post");
 const Comment = require("./models/comment");
 const { session } = require('passport');
 
