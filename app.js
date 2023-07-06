@@ -90,18 +90,22 @@ passport.use(new LocalStrategy(
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRET,
   },
-  (jwt_payload, done) => {
-    User.findOne({_id: jwt_payload._id}, function(err, user) {
-      if (err) {
-        return done(err, false)
-      }
-      
+  async(jwt_payload, done) => {
+    try {
+    const user = await User.findOne({_id: jwt_payload._id}).exec();
+    if (!user) {
+      return done(null, false, {message: "Token not authorized"});
+    } 
       if (user) {
         return done(null, user);
       } else {
         return done(null, false);
       }
-    });
+
+    }
+    catch(err) {
+      return done(err)
+    }
   }));
 
 app.get('/', asyncHandler(async(req, res, next) => {
