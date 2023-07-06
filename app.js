@@ -237,9 +237,15 @@ asyncHandler(async(req, res, next) => {
 
   const errors = validationResult(req);
 
+  let userid;
+
+  if (typeof window !== 'undefined') {
   let jwt = localStorage.getItem('jwt');
   let jwtdecoded = jwt_decode(jwt);
-  let userid = jwtdecoded._id;
+  userid = jwtdecoded._id;
+  } else {
+    userid = "64a674096e0c76ad9feb1d98"
+  }
 
   const post = new Post({
     title: req.body.title,
@@ -274,9 +280,14 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
 
-    let jwt = localStorage.getItem('jwt');
-    let jwtdecoded = jwt_decode(jwt);
-    let userid = jwtdecoded._id;
+    
+    if (typeof window !== 'undefined') {
+      let jwt = localStorage.getItem('jwt');
+      let jwtdecoded = jwt_decode(jwt);
+      userid = jwtdecoded._id;
+      } else {
+        userid = "64a674096e0c76ad9feb1d98"
+      }
 
     const post = new Post({
       title: req.body.title,
