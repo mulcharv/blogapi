@@ -21,6 +21,9 @@ const mongoDB = process.env.MONGODB_URI || dev_db_url;
 const compression = require("compression");
 const helmet = require("helmet");
 const RateLimit = require("express-rate-limit");
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const User = require("./models/user");
 const Post = require("./models/post");
@@ -123,7 +126,7 @@ app.get('posts/:postid/comments', asyncHandler(async(req, res, next) => {
   res.json(comments);
 }))
 
-app.post('posts/:postid/comments', [
+app.post('posts/:postid/comments', upload.any(), [
   body("name")
   .trim()
   .isLength({ min: 1 })
@@ -158,7 +161,7 @@ app.post('posts/:postid/comments', [
 ]);
 
 
-app.post('/signup', [
+app.post('/signup', upload.any(), [
   body("username", 'Username must not be empty')
   .trim()
   .isLength({ min: 1 })
@@ -196,7 +199,7 @@ app.post('/signup', [
 ])
 
 
-app.post("/login", 
+app.post("/login", upload.any(), 
   passport.authenticate(
     'local',
     { session: false, failureRedirect: '/login', failureMessage: true},
@@ -214,7 +217,7 @@ app.post("/login",
           }
 );
 
-app.post("/posts", passport.authenticate('jwt', {session: false}), [
+app.post("/posts", upload.any(), passport.authenticate('jwt', {session: false}), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
@@ -252,7 +255,7 @@ asyncHandler(async(req, res, next) => {
 
 })]);
 
-app.put("/posts/:postid", passport.authenticate('jwt',  {session: false}), [
+app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: false}), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
@@ -292,7 +295,7 @@ app.put("/posts/:postid", passport.authenticate('jwt',  {session: false}), [
   })
 ]);
 
-app.put('posts/:postid/comments/:commentid', passport.authenticate('jwt', {session: false}), [
+app.put('posts/:postid/comments/:commentid', upload.any(), passport.authenticate('jwt', {session: false}), [
   body("name")
   .trim()
   .isLength({ min: 1 })
