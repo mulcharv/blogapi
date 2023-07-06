@@ -25,6 +25,7 @@ const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
 const User = require("./models/user");
 const Post = require("./models/post");
 const Comment = require("./models/comment");
@@ -212,7 +213,9 @@ app.post("/login", upload.any(),
 
             const body = { _id: authuser._id, username: authuser.username };
             const token = jwt.sign({ user: body }, secret, opts);
+            if (typeof window !== 'undefined') {
             localStorage.setItem("jwt", JSON.stringify(token));
+            }
             if (token === null) {
               return res.json('token not found')
             }
