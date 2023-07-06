@@ -202,7 +202,7 @@ app.post('/signup', upload.any(), [
 app.post("/login", upload.any(), 
   passport.authenticate(
     'local',
-    { session: false, failureRedirect: '/login', failureMessage: true},
+    { session: false, failureMessage: true},
   ),
   async(req, res, next) => {
         const opts = {};
@@ -213,6 +213,9 @@ app.post("/login", upload.any(),
             const body = { _id: authuser._id, username: authuser.username };
             const token = jwt.sign({ user: body }, secret, opts);
             localStorage.setItem("jwt", JSON.stringify(token));
+            if (token === null) {
+              return res.json('token not found')
+            }
             return res.json({ token });
           }
 );
