@@ -127,7 +127,7 @@ app.get('/posts/:postid', asyncHandler(async(req, res, next) => {
 }));
 
 app.get('/posts/:postid/comments', asyncHandler(async(req, res, next) => {
-  const comments = await Comment.find({ post: req.params.postid }, "name comment").exec();
+  const comments = await Comment.find({ post: req.params.postid }, "name content").exec();
 
   res.json(comments);
 }))
