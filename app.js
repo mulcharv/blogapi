@@ -355,7 +355,7 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
 
 
 app.delete("/posts/:postid/comments/:commentid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
-  await Post.findByIdAndRemove(req.params.commentid).exec();
+  await Comment.findByIdAndRemove(req.params.commentid).exec();
   res.json();
 }))
 
