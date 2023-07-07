@@ -109,12 +109,12 @@ passport.use(new LocalStrategy(
     }
   }));
 
-app.get('posts', asyncHandler(async(req, res, next) => {
+app.get('/posts', asyncHandler(async(req, res, next) => {
   const posts = await Post.find().sort({ createdAt: -1 }).populate('author').exec();
   res.json(posts);
 }))
 
-app.get('posts/:postid', asyncHandler(async(req, res, next) => {
+app.get('/posts/:postid', asyncHandler(async(req, res, next) => {
   const post = await Post.findById(req.params.postid).populate('author').exec();
 
   if (post === null) {
@@ -126,13 +126,13 @@ app.get('posts/:postid', asyncHandler(async(req, res, next) => {
   res.json(post)
 }));
 
-app.get('posts/:postid/comments', asyncHandler(async(req, res, next) => {
+app.get('/posts/:postid/comments', asyncHandler(async(req, res, next) => {
   const comments = await Comment.find({ post: req.params.postid }, "name comment").exec();
 
   res.json(comments);
 }))
 
-app.post('posts/:postid/comments', upload.any(), [
+app.post('/posts/:postid/comments', upload.any(), [
   body("name")
   .trim()
   .isLength({ min: 1 })
@@ -317,7 +317,7 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
   })
 ]);
 
-app.put('posts/:postid/comments/:commentid', upload.any(), passport.authenticate('jwt', {session: false}), [
+app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticate('jwt', {session: false}), [
   body("name")
   .trim()
   .isLength({ min: 1 })
