@@ -127,17 +127,12 @@ app.get('/posts/:postid', asyncHandler(async(req, res, next) => {
 }));
 
 app.get('/posts/:postid/comments', asyncHandler(async(req, res, next) => {
-  const comments = await Comment.find({ post: req.params.postid }, "name content").exec();
+  const comments = await Comment.find({ post: req.params.postid }).populate('name').populate('content').exec();
 
   res.json(comments);
 }))
 
-app.post('/posts/:postid/comments', upload.any(), [
-  body("name")
-  .trim()
-  .isLength({ min: 1 })
-  .escape()
-  .withMessage("Name must be specified"),
+app.post('/posts/:postid/comments', upload.any(), passport.authenticate('jwt', {session: false}), [
   body("content")
   .trim()
   .isLength({ min: 1 })
@@ -147,8 +142,18 @@ app.post('/posts/:postid/comments', upload.any(), [
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
 
+  let userid;
+
+  if (typeof window !== 'undefined') {
+  let jwt = localStorage.getItem('jwt');
+  let jwtdecoded = jwt_decode(jwt);
+  userid = jwtdecoded._id;
+  } else {
+    userid = "64a674096e0c76ad9feb1d98"
+  }
+
     const comment = new Comment({
-      name: req.body.name,
+      name: userid,
       content: req.body.content,
       post: req.params.postid,
     });
@@ -285,6 +290,7 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
 
+    let userid;
     
     if (typeof window !== 'undefined') {
       let jwt = localStorage.getItem('jwt');
@@ -292,7 +298,13 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
       userid = jwtdecoded._id;
       } else {
         userid = "64a674096e0c76ad9feb1d98"
-      }
+      };
+
+      let selectpost = await Comment.findById(req.params.postid).exec();
+
+      if (selectpost.name === userid) {
+    
+    
 
     const post = new Post({
       title: req.body.title,
@@ -312,17 +324,15 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
       const thepost = await Post.findByIdAndUpdate(req.params.postid, post, {});
 
       res.json(thepost);
-    }
+    } 
+  } else {
+    res.status(401).json({message: 'Unauthorized to edit', status: 401})
+  }
 
   })
 ]);
 
 app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticate('jwt', {session: false}), [
-  body("name")
-  .trim()
-  .isLength({ min: 1 })
-  .escape()
-  .withMessage("Name must be specified"),
   body("content")
   .trim()
   .isLength({ min: 1 })
@@ -332,8 +342,23 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
 
+    let userid;
+
+    if (typeof window !== 'undefined') {
+      let jwt = localStorage.getItem('jwt');
+      let jwtdecoded = jwt_decode(jwt);
+      userid = jwtdecoded._id;
+      } else {
+        userid = "64a674096e0c76ad9feb1d98"
+      }
+    
+    let selectcomment = await Comment.findById(req.params.commentid).exec();
+
+    if (selectcomment.name === userid) {
+    
+
     const comment = new Comment({
-      name: req.body.name,
+      name: userid,
       content: req.body.content,
       post: req.params.postid,
       _id: req.params.commentid
@@ -350,14 +375,56 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
 
       res.json(thecomment);
     }
+  } else {
+    res.status(401).json({message: 'Unauthorized to edit', status: 401})
+  }
 
 })])
 
+app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
+  let deletePost = Post.findById(req.params.postid).exec();
+  let userid;
+
+  if (typeof window !== 'undefined') {
+    let jwt = localStorage.getItem('jwt');
+    let jwtdecoded = jwt_decode(jwt);
+    userid = jwtdecoded._id;
+    } else {
+      userid = "64a674096e0c76ad9feb1d98"
+    }
+
+    if (deletePost.author === userid) {
+      await Comment.deleteMany({post: req.params.postid}).exec();
+      await Post.findByIdAndRemove(req.params.postid).exec();
+      res.json()
+    } else {
+      res.status(401).json({message: 'Unauthorized to delete', status: 401})
+    }
+
+}))
+
 
 app.delete("/posts/:postid/comments/:commentid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
-  await Comment.findByIdAndRemove(req.params.commentid).exec();
-  res.json();
+  let deleteComment = Comment.findById(req.params.commentid).exec();
+
+  let userid;
+
+  if (typeof window !== 'undefined') {
+    let jwt = localStorage.getItem('jwt');
+    let jwtdecoded = jwt_decode(jwt);
+    userid = jwtdecoded._id;
+    } else {
+      userid = "64a674096e0c76ad9feb1d98"
+    }
+  
+  if (deleteComment.name === userid) {
+    await Comment.findByIdAndRemove(req.params.commentid).exec();
+    res.json();
+    } else {
+      res.status(401).json({message: 'Unauthorized to delete', status: 401})
+    }
 }))
+
 
 
 module.exports = app;
