@@ -51,6 +51,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+      "img-src": ["'self'", "https: data:"]
     },
   })
 )
@@ -110,7 +111,7 @@ passport.use(new LocalStrategy(
   }));
 
 app.get('/posts', asyncHandler(async(req, res, next) => {
-  const posts = await Post.find().sort({ createdAt: -1 }).populate('author').exec();
+  const posts = await Post.find().sort({ createdAt: -1 }).populate('author').sort({date: -1}).exec();
   res.json(posts);
 }))
 
@@ -118,18 +119,32 @@ app.get('/posts/:postid', asyncHandler(async(req, res, next) => {
   const post = await Post.findById(req.params.postid).populate('author').exec();
 
   if (post === null) {
-    const err = new Error("Post not found");
-    err.status = 404;
-    return next(err);
+   return res.status(404).json({message: 'Post not found', status: 404})
 }
 
   res.json(post)
 }));
 
+app.get('/posts/:userid', asyncHandler(async(req, res, next) => {
+  const posts = await Post.find({ author: req.params.userid}).populate('author').sort({date: -1}).exec();
+
+  if (posts === null) {
+    return res.status(404).json({message: 'Posts not found', status: 404})
+ }
+
+  res.json(posts)
+}))
+
 app.get('/posts/:postid/comments', asyncHandler(async(req, res, next) => {
-  const comments = await Comment.find({ post: req.params.postid }).populate('name').populate('content').exec();
+  const comments = await Comment.find({ post: req.params.postid }).populate('name').sort({date: -1}).exec();
 
   res.json(comments);
+}))
+
+app.get('/posts/:postid/comments/:commentid', asyncHandler(async(req, res, next) => {
+  const comment = await Comment.findById(req.params.commentid).exec();
+
+  res.json(comment);
 }))
 
 app.post('/posts/:postid/comments', upload.any(), passport.authenticate('jwt', {session: false}), [
@@ -183,7 +198,8 @@ app.post('/signup', upload.any(), [
   .escape(),
   body('passwordConfirmation').custom((value, { req }) => {
     return value === req.body.password;
-  }),
+  })
+  .withMessage('Passwords must match'),
   asyncHandler(async(req, res, next) => {
 
     const errors = validationResult(req);
@@ -226,9 +242,6 @@ app.post("/login", upload.any(),
             if (typeof window !== 'undefined') {
             localStorage.setItem("jwt", JSON.stringify(token));
             }
-            if (token === null) {
-              return res.json('token not found')
-            }
             return res.json({ token });
           }
 );
@@ -242,6 +255,11 @@ app.post("/posts", upload.any(), passport.authenticate('jwt', {session: false}),
   .trim()
   .isLength({min: 1})
   .escape(),
+  body("cover_image", "Cover image required")
+  .custom((value, {req}) => {
+    if (!req.file) throw new Error('Cover image is required');
+    return true;
+  }),
 
 asyncHandler(async(req, res, next) => {
 
@@ -261,6 +279,7 @@ asyncHandler(async(req, res, next) => {
     title: req.body.title,
     content: req.body.content, 
     author: userid,
+    cover_image: req.body.cover_image,
     published: req.body.published,
   });
 
@@ -396,7 +415,7 @@ app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asy
     if (deletePost.author === userid) {
       await Comment.deleteMany({post: req.params.postid}).exec();
       await Post.findByIdAndRemove(req.params.postid).exec();
-      res.json()
+      res.json('deleted')
     } else {
       res.status(401).json({message: 'Unauthorized to delete', status: 401})
     }
