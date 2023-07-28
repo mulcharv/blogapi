@@ -111,7 +111,7 @@ passport.use(new LocalStrategy(
   }));
 
 app.get('/posts', asyncHandler(async(req, res, next) => {
-  const posts = await Post.find().sort({ createdAt: -1 }).populate('author').sort({date: -1}).exec();
+  const posts = await Post.find().sort({ createdAt: -1 }).populate('author').exec();
   res.json(posts);
 }))
 
