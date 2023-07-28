@@ -321,9 +321,9 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
         userid = "64a674096e0c76ad9feb1d98"
       };
 
-      let selectpost = await Comment.findById(req.params.postid).exec();
+      let selectpost = await Post.findById(req.params.postid).exec();
 
-      if (selectpost.name === userid) {
+      if (selectpost.author === userid) {
     
     
 
