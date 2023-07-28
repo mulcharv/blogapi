@@ -24,6 +24,7 @@ const RateLimit = require("express-rate-limit");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+const cors = require('cors');
 
 
 const User = require("./models/user");
@@ -56,6 +57,7 @@ app.use(
   })
 )
 
+app.use(cors());
 app.use(limiter);
 app.use(compression());
 app.use(logger('dev'));
