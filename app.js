@@ -236,7 +236,8 @@ app.post("/login", upload.any(),
   ),
   asyncHandler(async(req, res, next) => {
         if (req.session.messages.length > 0) {
-          return res.json(req.session.messages)
+          let errors = req.session.messages
+          return res.json({errors})
         }
         const opts = {};
         opts.expiresIn = 3600;
