@@ -232,7 +232,7 @@ app.post("/login", upload.any(),
     'local', {session: false}, function(err, user, info) {
       if (err) {return next(err);}
       if (!user) {
-        return res.status(404).json({message: info.message, status: 404})
+        return res.status(404).json({message: "Incorrect username or password", status: 404})
       }
     }
   ),
