@@ -58,6 +58,7 @@ app.use(
 )
 
 app.use(cors());
+app.use(passport.initialize());
 app.use(limiter);
 app.use(compression());
 app.use(logger('dev'));
@@ -227,9 +228,9 @@ app.post('/signup', upload.any(), [
 ])
 
 
-app.post("/login", upload.any(), 
+app.post("/login", upload.any(), async(req, res, next) => {
   passport.authenticate(
-    'local', {session: false}, function(err, user, info) {
+    'local', {session: false}, async(err, user, info) => {
       if (!user) {
         return res.status(404).json({message: "Incorrect username or password", status: 404})
       }
@@ -247,7 +248,7 @@ app.post("/login", upload.any(),
             localStorage.setItem("jwt", JSON.stringify(token));
             }
             return res.json({ token });
-          })
+          })(req, res, next)}
 );
 
 app.post("/posts", upload.any(), passport.authenticate('jwt', {session: false}), [
