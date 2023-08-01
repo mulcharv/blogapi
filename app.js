@@ -230,13 +230,9 @@ app.post('/signup', upload.any(), [
 app.post("/login", upload.any(), 
   passport.authenticate(
     'local',
-    { session: false, failureMessage: true},
+    { session: false, failureRedirect: '/login'},
   ),
   asyncHandler(async(req, res, next) => {
-        if (req.session.messages.length > 0) {
-          let errors = req.session.messages
-          return res.json({errors})
-        }
         const opts = {};
         opts.expiresIn = 3600;
         const secret = process.env.SECRET;
