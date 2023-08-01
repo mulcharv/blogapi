@@ -230,7 +230,6 @@ app.post('/signup', upload.any(), [
 app.post("/login", upload.any(), 
   passport.authenticate(
     'local', {session: false}, function(err, user, info) {
-      if (err) {return next(err);}
       if (!user) {
         return res.status(404).json({message: "Incorrect username or password", status: 404})
       }
