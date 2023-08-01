@@ -72,12 +72,14 @@ passport.use(new LocalStrategy(
     try {
       const user = await User.findOne({ username: username }).exec();
       if (!user) {
+        req.session.messages = [];
         return done(null, false, { message: "Incorrect username"});
       } else {
         bcrypt.compare(password, user.password, (err, res) => {
           if (res === true) {
             return done(null, user)
           } else {
+            req.session.messages = []
             return done(null, false, { message: "Incorrect password"})
           }
         })
@@ -212,11 +214,10 @@ app.post('/signup', upload.any(), [
     });
 
     if (!errors.isEmpty()) {
-      res.json({
+      return res.json({
         user: user,
         errors: errors.array(),
       });
-      return;
     } else {
       let salt = bcrypt.genSaltSync(10);
       let hash = bcrypt.hashSync(req.body.password, salt);
@@ -233,7 +234,10 @@ app.post("/login", upload.any(),
     'local',
     { session: false, failureMessage: true},
   ),
-  async(req, res, next) => {
+  asyncHandler(async(req, res, next) => {
+        if (req.session.messages.length > 0) {
+          return res.json(req.session.messages)
+        }
         const opts = {};
         opts.expiresIn = 3600;
         const secret = process.env.SECRET;
@@ -245,7 +249,7 @@ app.post("/login", upload.any(),
             localStorage.setItem("jwt", JSON.stringify(token));
             }
             return res.json({ token });
-          }
+          })
 );
 
 app.post("/posts", upload.any(), passport.authenticate('jwt', {session: false}), [
