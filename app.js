@@ -72,14 +72,12 @@ passport.use(new LocalStrategy(
     try {
       const user = await User.findOne({ username: username }).exec();
       if (!user) {
-        req.session.messages = [];
         return done(null, false, { message: "Incorrect username"});
       } else {
         bcrypt.compare(password, user.password, (err, res) => {
           if (res === true) {
             return done(null, user)
           } else {
-            req.session.messages = []
             return done(null, false, { message: "Incorrect password"})
           }
         })
