@@ -228,15 +228,12 @@ app.post('/signup', upload.any(), [
 ])
 
 
-app.post("/login", upload.any(), async(req, res, next) => {
+app.post("/login", async(req, res, next) => {
   passport.authenticate(
     'local', {session: false}, async(err, user, info) => {
-      if (!user) {
+      if (!user || err) {
         return res.status(404).json({message: "Incorrect username or password", status: 404})
-      }
-    }
-  ),
-  asyncHandler(async(req, res, next) => {
+      } else {
         const opts = {};
         opts.expiresIn = 3600;
         const secret = process.env.SECRET;
@@ -248,7 +245,9 @@ app.post("/login", upload.any(), async(req, res, next) => {
             localStorage.setItem("jwt", JSON.stringify(token));
             }
             return res.json({ token });
-          })(req, res, next)}
+      }
+    }
+  ) (req, res, next)}
 );
 
 app.post("/posts", upload.any(), passport.authenticate('jwt', {session: false}), [
