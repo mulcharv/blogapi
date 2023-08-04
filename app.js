@@ -269,20 +269,10 @@ asyncHandler(async(req, res, next) => {
 
   const errors = validationResult(req);
 
-  let userid;
-
-  if (typeof window !== 'undefined') {
-  let jwt = localStorage.getItem('jwt');
-  let jwtdecoded = jwt_decode(jwt);
-  userid = jwtdecoded._id;
-  } else {
-    userid = "64a674096e0c76ad9feb1d98"
-  }
-
   const post = new Post({
     title: req.body.title,
     content: req.body.content, 
-    author: userid,
+    author: req.body.author,
     cover_image: req.file.buffer,
     published: req.body.published,
   });
