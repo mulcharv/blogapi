@@ -265,7 +265,7 @@ app.post("/posts", upload.single('cover_image'), [
   .escape(),
   body("cover_image", "Cover image required")
   .custom((value, {req}) => {
-    if (!req.file) throw new Error('Cover image is required');
+    if (!req.body.cover_image) throw new Error('Cover image is required');
     return true;
   }),
 
