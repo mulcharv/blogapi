@@ -96,6 +96,7 @@ passport.use(new LocalStrategy(
   },
   async(jwt_payload, done) => {
     try {
+    console.log(jwt_payload.user._id)
     const user = await User.findById(jwt_payload.user._id).exec();
     if (!user) {
       console.log('did not work')
