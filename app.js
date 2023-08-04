@@ -250,7 +250,7 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", upload.single('cover_image'), [
+app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt', {session: false}), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
@@ -273,7 +273,7 @@ asyncHandler(async(req, res, next) => {
     title: req.body.title,
     content: req.body.content, 
     author: req.body.author,
-    cover_image: req.file.buffer,
+    cover_image: req.body.cover_image.buffer,
     published: req.body.published,
   });
 
