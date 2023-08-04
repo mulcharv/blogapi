@@ -250,7 +250,7 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt', {session: false}), [
+app.post("/posts", upload.single('cover_image'), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
