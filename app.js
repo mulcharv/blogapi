@@ -96,7 +96,7 @@ passport.use(new LocalStrategy(
   },
   async(jwt_payload, done) => {
     try {
-    const user = await User.findOne({_id: jwt_payload.user._id}).exec();
+    const user = await User.findById(jwt_payload.user._id).exec();
     if (!user) {
       console.log('did not work')
       return done(null, false, {message: "Token not authorized"});
@@ -253,8 +253,44 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", upload.single('cover_image'), (req, res) => {
-  return res.status(200).json("YAY! this is a protected Route")});
+app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt', {session: false}), [
+  body("title", "Title must not be empty")
+  .trim()
+  .isLength({min: 1})
+  .escape(),
+  body("content", "Content must not be empty")
+  .trim()
+  .isLength({min: 1})
+  .escape(),
+  body("cover_image", "Cover image required")
+  .custom((value, {req}) => {
+    if (!req.file) throw new Error('Cover image is required');
+    return true;
+  }),
+
+asyncHandler(async(req, res, next) => {
+  console.log('here');
+  const errors = validationResult(req);
+
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content, 
+    author: req.body.author,
+    cover_image: req.body.cover_image.buffer,
+    published: req.body.published,
+  });
+
+  if (!errors.isEmpty()) {
+    return res.json({
+      post: post,
+      errors: errors.array(),
+    });
+  } else {
+    await post.save();
+    res.json(post);
+  }
+
+})]);
 
 app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: false}), [
   body("title", "Title must not be empty")
