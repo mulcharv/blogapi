@@ -253,7 +253,7 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt', {session: false}), (req, res) => {
+app.post("/posts", upload.single('cover_image'), (req, res) => {
   return res.status(200).json("YAY! this is a protected Route")});
 
 app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: false}), [
