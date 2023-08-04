@@ -263,11 +263,6 @@ app.post("/posts", upload.single('cover_image'), [
   .trim()
   .isLength({min: 1})
   .escape(),
-  body("cover_image", "Cover image required")
-  .custom((value, {req}) => {
-    if (!req.body.cover_image) throw new Error('Cover image is required');
-    return true;
-  }),
 
 asyncHandler(async(req, res, next) => {
   console.log('here');
