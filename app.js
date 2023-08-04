@@ -98,12 +98,15 @@ passport.use(new LocalStrategy(
     try {
     const user = await User.findOne({_id: jwt_payload.user._id}).exec();
     if (!user) {
+      console.log('did not work')
       return done(null, false, {message: "Token not authorized"});
     } 
     if (user) {
+        console.log('worked')
         return done(null, user);
     } 
     else {
+        console.log('dont know')
         return done(null, false);
     }
 
