@@ -251,7 +251,6 @@ app.post("/login", async(req, res, next) => {
 );
 
 app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt', {session: false}), [
-  console.log('here'),
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
@@ -267,7 +266,7 @@ app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt', {s
   }),
 
 asyncHandler(async(req, res, next) => {
-
+  console.log('here');
   const errors = validationResult(req);
 
   const post = new Post({
