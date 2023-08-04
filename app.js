@@ -288,11 +288,10 @@ asyncHandler(async(req, res, next) => {
   });
 
   if (!errors.isEmpty()) {
-    res.json({
+    return res.json({
       post: post,
       errors: errors.array(),
     });
-    return;
   } else {
     await post.save();
     res.json(post);
