@@ -59,6 +59,7 @@ app.use(
 
 app.use(cors());
 app.use(passport.initialize());
+app.use()
 app.use(limiter);
 app.use(compression());
 app.use(logger('dev'));
@@ -401,6 +402,9 @@ app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asy
 
 }))
 
+app.get('/protected', passport.authenticate("jwt", { session: false }), (req, res)=>{
+  res.json({test:'test protected route'})
+  })
 
 app.delete("/posts/:postid/comments/:commentid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
   let deleteComment = Comment.findById(req.params.commentid).exec();
