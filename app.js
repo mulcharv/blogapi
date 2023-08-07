@@ -99,15 +99,12 @@ passport.use(new LocalStrategy(
     console.log(jwt_payload.user._id)
     const user = await User.findById(jwt_payload.user._id).exec();
     if (!user) {
-      console.log('did not work')
       return done(null, false, {message: "Token not authorized"});
     } 
     if (user) {
-        console.log('worked')
         return done(null, user);
     } 
     else {
-        console.log('dont know')
         return done(null, false);
     }
 
@@ -239,12 +236,11 @@ app.post("/login", async(req, res, next) => {
         return res.status(404).json({message: "Incorrect username or password", status: 404})
       } else {
         const opts = {};
-        opts.expiresIn = 3600;
         const secret = process.env.SECRET;
         const authuser = await User.findOne({ username: req.body.username }).exec();
 
             const body = { _id: authuser._id, username: authuser.username };
-            const token = jwt.sign({ user: body }, secret, opts);
+            const token = jwt.sign({ user: body }, secret);
             if (typeof window !== 'undefined') {
             localStorage.setItem("jwt", JSON.stringify(token));
             }
@@ -254,7 +250,7 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", upload.single('cover_image'), [
+app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt',  {session: false}), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
