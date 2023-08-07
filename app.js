@@ -59,7 +59,6 @@ app.use(
 
 app.use(cors());
 app.use(passport.initialize());
-app.use()
 app.use(limiter);
 app.use(compression());
 app.use(logger('dev'));
