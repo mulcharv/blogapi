@@ -94,17 +94,18 @@ passport.use(new LocalStrategy(
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRET,
   },
-  async(jwt_payload, done) => {
-    const user = await User.findById(jwt_payload.user._id).exec();
-    if(err) {
-      return done(err, false);
-    }
-    if (user) {
-        return done(null, user);
-    } 
-    else {
-        return done(null, false);
-    }
+  function(jwt_payload, done) {
+    User.findOne({_id: jwt_payload.user._id}, function(err, user) {
+      if(err) {
+        return done(err, false);
+      }
+      if (user) {
+          return done(null, user);
+      } 
+      else {
+          return done(null, false);
+      }
+    })
   }));
 
 app.get('/posts', asyncHandler(async(req, res, next) => {
@@ -243,7 +244,7 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", upload.single('cover_image'), passport.authenticate('jwt',  {session: false}), [
+app.post("/posts", passport.authenticate('jwt',  {session: false}), upload.single('cover_image'), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
