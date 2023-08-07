@@ -95,6 +95,7 @@ passport.use(new LocalStrategy(
     secretOrKey: process.env.SECRET,
   },
   async(jwt_payload, done) => {
+    console.log(jwt_payload);
     const user = await User.findById(jwt_payload.user._id).exec();
     if (user) {
         return done(null, user);
