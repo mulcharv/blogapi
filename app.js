@@ -97,13 +97,13 @@ passport.use(new LocalStrategy(
   async(jwt_payload, done) => {
     const user = await User.findById(jwt_payload.user._id).exec();
     if(err) {
-      return res.status(401).json({message: 'There was an error somewhere'})
+      return done(err, false);
     }
     if (user) {
         return done(null, user);
     } 
     else {
-        return res.status(401).json({message: 'It is actually unauthorized for some reason'});
+        return done(null, false);
     }
   }));
 
