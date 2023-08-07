@@ -8,7 +8,6 @@ const PostSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true},
-    cover_image: {type: Buffer, required: true, contentType: String},
     published: { type: Boolean, required: true }, 
 }, {timestamps: true });
 

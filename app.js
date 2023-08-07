@@ -241,7 +241,7 @@ app.post("/login", async(req, res, next) => {
   ) (req, res, next)}
 );
 
-app.post("/posts", passport.authenticate('jwt',  {session: false}), upload.single('cover_image'), [
+app.post("/posts", passport.authenticate('jwt',  {session: false}), [
   body("title", "Title must not be empty")
   .trim()
   .isLength({min: 1})
@@ -259,7 +259,6 @@ asyncHandler(async(req, res, next) => {
     title: req.body.title,
     content: req.body.content, 
     author: req.body.author,
-    cover_image: req.body.cover_image,
     published: req.body.published,
   });
 
@@ -404,6 +403,7 @@ app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asy
 app.get('/protected', passport.authenticate("jwt", { session: false }), (req, res)=>{
   res.json({test:'test protected route'})
   })
+
 
 app.delete("/posts/:postid/comments/:commentid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
   let deleteComment = Comment.findById(req.params.commentid).exec();
