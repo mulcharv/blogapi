@@ -94,18 +94,17 @@ passport.use(new LocalStrategy(
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRET,
   },
-  function(jwt_payload, done) {
-    User.findOne({_id: jwt_payload.user._id}, function(err, user) {
-      if(err) {
-        return done(err, false);
-      }
-      if (user) {
-          return done(null, user);
-      } 
-      else {
-          return done(null, false);
-      }
-    })
+  async(jwt_payload, done) => {
+    const user = await User.findById(jwt_payload.user._id).exec();
+    if(err) {
+      return done(err, false);
+    }
+    if (user) {
+        return done(null, user);
+    } 
+    else {
+        return done(null, false);
+    }
   }));
 
 app.get('/posts', asyncHandler(async(req, res, next) => {
