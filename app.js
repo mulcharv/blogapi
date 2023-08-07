@@ -96,9 +96,6 @@ passport.use(new LocalStrategy(
   },
   async(jwt_payload, done) => {
     const user = await User.findById(jwt_payload.user._id).exec();
-    if(err) {
-      return done(err, false);
-    }
     if (user) {
         return done(null, user);
     } 
@@ -261,7 +258,7 @@ asyncHandler(async(req, res, next) => {
     title: req.body.title,
     content: req.body.content, 
     author: req.body.author,
-    cover_image: req.body.cover_image.buffer,
+    cover_image: req.body.cover_image,
     published: req.body.published,
   });
 
