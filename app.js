@@ -95,22 +95,15 @@ passport.use(new LocalStrategy(
     secretOrKey: process.env.SECRET,
   },
   async(jwt_payload, done) => {
-    try {
-    console.log(jwt_payload.user._id)
     const user = await User.findById(jwt_payload.user._id).exec();
-    if (!user) {
-      return done(null, false, {message: "Token not authorized"});
-    } 
+    if(err) {
+      return done(err, false);
+    }
     if (user) {
         return done(null, user);
     } 
     else {
         return done(null, false);
-    }
-
-    }
-    catch(err) {
-      return done(err)
     }
   }));
 
