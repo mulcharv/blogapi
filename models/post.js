@@ -9,7 +9,7 @@ const PostSchema = new Schema({
     content: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true},
     published: { type: Boolean, required: true }, 
-}, {timestamps: true });
+}, {timestamps: true, toObject: {virtuals: true}, toJSON: {virtuals: true} });
 
 PostSchema.virtual("timestamp_formatted").get(function () {
     return DateTime.fromJSDate(this.createdAt).toLocaleString(DateTime.DATE_MED);
