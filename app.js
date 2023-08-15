@@ -330,8 +330,6 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
     const errors = validationResult(req);
     
     let selectcomment = await Comment.findById(req.params.commentid).exec();
-
-    if (selectcomment.name === req.body.userid) {
     
 
     const comment = new Comment({
@@ -352,11 +350,8 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
 
       res.json(thecomment);
     }
-  } else {
-    res.status(401).json({message: 'Unauthorized to edit', status: 401})
   }
-
-})])
+)])
 
 app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
   let deletePost = Post.findById(req.params.postid).exec();
