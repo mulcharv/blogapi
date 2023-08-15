@@ -382,7 +382,7 @@ app.get('/protected', passport.authenticate("jwt", { session: false }), (req, re
 
 app.delete("/posts/:postid/comments/:commentid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
     await Comment.findByIdAndRemove(req.params.commentid).exec();
-    res.json();
+    res.json('deleted');
 }))
 
 
