@@ -165,7 +165,8 @@ app.post('/posts/:postid/comments', upload.any(), passport.authenticate('jwt', {
       });
       return; 
   } else {
-      let newcomment = await comment.save();
+      await comment.save();
+      const newcomment = await Comment.findById(comment._id).exec();
       res.json(newcomment)
   }
   })
