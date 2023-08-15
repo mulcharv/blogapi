@@ -381,24 +381,8 @@ app.get('/protected', passport.authenticate("jwt", { session: false }), (req, re
 
 
 app.delete("/posts/:postid/comments/:commentid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
-  let deleteComment = Comment.findById(req.params.commentid).exec();
-
-  let userid;
-
-  if (typeof window !== 'undefined') {
-    let jwt = localStorage.getItem('jwt');
-    let jwtdecoded = jwt_decode(jwt);
-    userid = jwtdecoded._id;
-    } else {
-      userid = "64a674096e0c76ad9feb1d98"
-    }
-  
-  if (deleteComment.name === userid) {
     await Comment.findByIdAndRemove(req.params.commentid).exec();
     res.json();
-    } else {
-      res.status(401).json({message: 'Unauthorized to delete', status: 401})
-    }
 }))
 
 
