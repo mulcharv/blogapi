@@ -146,8 +146,7 @@ app.post('/posts/:postid/comments', upload.any(), passport.authenticate('jwt', {
   body("content")
   .trim()
   .isLength({ min: 1 })
-  .escape()
-  .withMessage("Comment must have text"),
+  .escape(),
 
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
@@ -161,7 +160,7 @@ app.post('/posts/:postid/comments', upload.any(), passport.authenticate('jwt', {
 
       res.json({
           comment: comment,
-          errors: errors.array(),
+          errors: "Comment must have text",
       });
       return; 
   } else {
