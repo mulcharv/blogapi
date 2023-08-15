@@ -328,24 +328,14 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
 
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
-
-    let userid;
-
-    if (typeof window !== 'undefined') {
-      let jwt = localStorage.getItem('jwt');
-      let jwtdecoded = jwt_decode(jwt);
-      userid = jwtdecoded._id;
-      } else {
-        userid = "64a674096e0c76ad9feb1d98"
-      }
     
     let selectcomment = await Comment.findById(req.params.commentid).exec();
 
-    if (selectcomment.name === userid) {
+    if (selectcomment.name === req.body.userid) {
     
 
     const comment = new Comment({
-      name: userid,
+      name: req.body.userid,
       content: req.body.content,
       post: req.params.postid,
       _id: req.params.commentid
