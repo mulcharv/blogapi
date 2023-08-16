@@ -344,7 +344,7 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
 )])
 
 app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
-  let deletePost = Post.findById(req.params.postid).exec();
+  let deletePost = await Post.findById(req.params.postid).exec();
 
     if (deletePost.author.toString() === req.body.author) {
       await Comment.deleteMany({post: req.params.postid}).exec();
