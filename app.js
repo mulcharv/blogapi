@@ -281,7 +281,7 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
       console.log(selectpost.author)
       console.log(req.body.author)
 
-      if (selectpost.author === req.body.author) {    
+      if (selectpost.author.toString() === req.body.author) {    
 
     const post = new Post({
       title: req.body.title,
