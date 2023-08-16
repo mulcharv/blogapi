@@ -277,26 +277,14 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
   asyncHandler(async(req, res, next) => {
     const errors = validationResult(req);
 
-    let userid;
-    
-    if (typeof window !== 'undefined') {
-      let jwt = localStorage.getItem('jwt');
-      let jwtdecoded = jwt_decode(jwt);
-      userid = jwtdecoded._id;
-      } else {
-        userid = "64a674096e0c76ad9feb1d98"
-      };
-
       let selectpost = await Post.findById(req.params.postid).exec();
 
-      if (selectpost.author === userid) {
-    
-    
+      if (selectpost.author === req.body.author) {    
 
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      author: userid,
+      author: req.body.author,
       published: req.body.published,
       _id: req.params.postid,
     });
