@@ -278,6 +278,8 @@ app.put("/posts/:postid", upload.any(), passport.authenticate('jwt',  {session: 
     const errors = validationResult(req);
 
       let selectpost = await Post.findById(req.params.postid).exec();
+      console.log(selectpost.author)
+      console.log(req.body.author)
 
       if (selectpost.author === req.body.author) {    
 
