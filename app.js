@@ -345,17 +345,8 @@ app.put('/posts/:postid/comments/:commentid', upload.any(), passport.authenticat
 
 app.delete("/posts/:postid", passport.authenticate('jwt', {session: false}), asyncHandler(async(req, res, next) => {
   let deletePost = Post.findById(req.params.postid).exec();
-  let userid;
 
-  if (typeof window !== 'undefined') {
-    let jwt = localStorage.getItem('jwt');
-    let jwtdecoded = jwt_decode(jwt);
-    userid = jwtdecoded._id;
-    } else {
-      userid = "64a674096e0c76ad9feb1d98"
-    }
-
-    if (deletePost.author === userid) {
+    if (deletePost.author.toString() === req.body.author) {
       await Comment.deleteMany({post: req.params.postid}).exec();
       await Post.findByIdAndRemove(req.params.postid).exec();
       res.json('deleted')
