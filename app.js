@@ -120,7 +120,7 @@ app.get('/posts/:postid', asyncHandler(async(req, res, next) => {
   res.json(post)
 }));
 
-app.get('/posts/:userid', asyncHandler(async(req, res, next) => {
+app.get('/posts/user/:userid', asyncHandler(async(req, res, next) => {
   const posts = await Post.find({ author: req.params.userid}).populate('author').sort({date: -1}).exec();
 
   if (posts === null) {
