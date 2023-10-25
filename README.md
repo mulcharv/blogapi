@@ -7,21 +7,21 @@ and the code-base for the front end <a href="https://github.com/mulcharv/blogfro
 
 This project has the following routes and features:
 
-* Passport JS strategies to sign up as a user and authenticate a JWT
-* GET all posts
-* GET a post by post ID
-* GET all posts by a user ID
-* GET all comments by a post ID
-* GET a specific comment by a post and comment ID
-* POST a comment under a post via its ID
-* POST username, password, and password confirmation to sign up
-* POST username and password to login
-* POST a blog post with title, content, author (user ID), and publish status
-* PUT new post information by post ID
-* PUT new comment information by post and comment ID
-* DELETE post by post ID
-* DELETE comment by post and comment ID
-* Have all PUT, POST, and DELETE routes above authenticated by the JWT passport strategy
+* Passport JS strategies to sign up as a user and authenticate a JWT.
+* GET all posts.
+* GET a post by post ID.
+* GET all posts by a user ID.
+* GET all comments by a post ID.
+* GET a specific comment by a post and comment ID.
+* POST a comment under a post via its ID.
+* POST username, password, and password confirmation to sign up.
+* POST username and password to login.
+* POST a blog post with title, content, author (user ID), and publish status.
+* PUT new post information by post ID.
+* PUT new comment information by post and comment ID.
+* DELETE post by post ID.
+* DELETE comment by post and comment ID.
+* Have all PUT, POST, and DELETE routes above authenticated by the JWT passport strategy.
 
 This project uses the Node.js web framework Express to build out the API and its routes. 
 It also uses Mongoose to build out data models for comment, post, and user schemas. 
@@ -30,26 +30,26 @@ It also uses Mongoose to build out data models for comment, post, and user schem
 
 This project was my first experience with such a high level of routes, authentication, and handling of data, which allowed me to learn how to do the following:
 
-* Set up and connect Mongo DB database via Mongoose to Express API
-* Utilize Multer to handle multi-form part data on POST and PUT requests
-* Structuring API route paths as per REST protocols to ensure seperation of concerns and no route conflicts
-* Logicial error handling with and without express-validator
-* Constructing and saving new instances of schemas based on data delivered within the body of fetch requests
-* Writing the correct commands and options to update and deliver existing schema instances in res.json format
+* Set up and connect Mongo DB database via Mongoose to Express API.
+* Utilize Multer to handle multi-form part data on POST and PUT requests.
+* Structuring API route paths as per REST protocols to ensure seperation of concerns and no route conflicts.
+* Logicial error handling with and without express-validator.
+* Constructing and saving new instances of schemas based on data delivered within the body of fetch requests.
+* Writing the correct commands and options to update and deliver existing schema instances in res.json format.
 * Building schema models that are efficient in how they relate to eachother and what extra information they can communicate.
   For this project that meant having posts and comments use the user as the base reference. It also required setting timestamps to true,
-  creating virtual properties for formatted timestamps, and setting toObject and toJSON of those virtuals to true
-* Including additional levels of authorization such as checking the user ID from the JWT matches the user ID of the post they are trying to delete
+  creating virtual properties for formatted timestamps, and setting toObject and toJSON of those virtuals to true.
+* Including additional levels of authorization such as checking the user ID from the JWT matches the user ID of the post they are trying to delete.
 
 ## Future Opportunities 
 
 After completion, there are several features I realized would enhance the application which I look to come back in the future and include: 
 
 * Expanding on the user model schema to include more details (country, avatar image, favourite music genres/musicians) that would provide enough
-  to create user bio pages for public viewing by all site users
+  to create user bio pages for public viewing by all site users.
 * The ability for logged in users to like certain posts, comments, and friends, which would yield data that could be included on their front end profile page
-  (favourited comments, posts, and users)
-* Including cover images as part of the post schema so that each post on the front-end could have a corresponding photo at the top of it
+  (favourited comments, posts, and users).
+* Including cover images as part of the post schema so that each post on the front-end could have a corresponding photo at the top of it.
 
 ## Acknowledgements 
 
