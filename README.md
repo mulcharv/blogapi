@@ -19,8 +19,8 @@ This project has the following routes and features:
 * POST a blog post with title, content, author (user ID), and publish status
 * PUT new post information by post ID
 * PUT new comment information by post and comment ID
-* Delete post by post ID
-* Delete comment by post and comment ID
+* DELETE post by post ID
+* DELETE comment by post and comment ID
 * Have all PUT, POST, and DELETE routes above authenticated by the JWT passport strategy
 
 This project uses the Node.js web framework Express to build out the API and its routes. 
