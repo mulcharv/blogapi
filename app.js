@@ -17,7 +17,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 require('dotenv').config();
 const dev_db_url = process.env.MONGOURL;
-const mongoDB = process.env.MONGODB_URI || dev_db_url;
+const mongoDB = dev_db_url;
 const compression = require("compression");
 const helmet = require("helmet");
 const RateLimit = require("express-rate-limit");
